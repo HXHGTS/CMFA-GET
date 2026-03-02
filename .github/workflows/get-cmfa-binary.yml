@@ -23,8 +23,8 @@ jobs:
       run: |
         MIHOMO_ALPHA_URL=$(curl -s https://api.github.com/repos/MetaCubeX/ClashMetaForAndroid/releases | grep 'alpha-arm64-v8a-release.apk' | grep 'https' | awk -F\" '{print $4}')
         MIHOMO_URL=$(curl -s https://api.github.com/repos/MetaCubeX/ClashMetaForAndroid/releases/latest | grep 'arm64-v8a-release.apk' | grep 'https' | awk -F\" '{print $4}')
-        curl -o cmfa-meta-arm64-v8a-release.apk ${MIHOMO_URL}
-        curl -o cmfa-alpha-arm64-v8a-release.apk ${MIHOMO_ALPHA_URL}
+        curl -o cmfa-meta-arm64-v8a-release.apk -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36' ${MIHOMO_URL}
+        curl -o cmfa-alpha-arm64-v8a-release.apk -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36' ${MIHOMO_ALPHA_URL}
 
     - name: Prepare Binary Folder
       run: |
