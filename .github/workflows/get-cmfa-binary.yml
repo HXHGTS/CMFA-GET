@@ -1,0 +1,51 @@
+name: Get cmfa binary
+
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+
+jobs:
+  get-cmfa-binary:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Necessary Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl sed
+
+    - name: Download Binary
+      run: |
+        #MIHOMO_URL=$(curl -s https://api.github.com/repos/MetaCubeX/ClashMetaForAndroid/releases | grep 'alpha-arm64-v8a-release.apk' | grep 'https' | awk -F\" '{print $4}')
+        MIHOMO_URL=$(curl -s https://api.github.com/repos/MetaCubeX/ClashMetaForAndroid/releases/latest | grep 'arm64-v8a-release.apk' | grep 'https' | awk -F\" '{print $4}')
+        # BETA_VERSION=1.12.0-alpha.12
+        curl -o SFA-arm64-v8a.apk https://github.com/SagerNet/sing-box/releases/download/v$VERSION/SFA-$VERSION-arm64-v8a.apk
+        # curl -o SFA-beta-arm64-v8a.apk https://github.com/SagerNet/sing-box/releases/download/v$BETA_VERSION/SFA-$BETA_VERSION-arm64-v8a.apk
+        curl -o cmfa-meta-arm64-v8a-release.apk ${MIHOMO_URL}
+
+    - name: Prepare Binary Folder
+      run: |
+        mkdir -p binary
+        # mv -f SFA-arm64-v8a.apk SFA-beta-arm64-v8a.apk cmfa-meta-arm64-v8a-release.apk binary
+        mv -f SFA-arm64-v8a.apk cmfa-meta-arm64-v8a-release.apk binary
+
+    - name: Configure Git User
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+
+    - name: Check for Changes and Push Files
+      run: |
+        git checkout -b Release
+        git add binary
+        echo "Force updating repository with local content."
+        git commit -m "Force update with local content"
+        git push --force origin Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
